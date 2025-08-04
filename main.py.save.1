@@ -1,0 +1,184 @@
+import discord
+import os
+from discord.ext import commands
+
+discord_token = open("/home/neko/discord/bakabot/Token.txt")
+token = discord_token.read()
+discord_token.close()
+intents = discord.Intents.default()
+intents.members = True
+intents.guilds = True
+bot = commands.Bot(command_prefix=".", intents=intents, case_insensitive=True, help_command=None)
+
+# Initialize Cogs
+for file in os.listdir('<maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>'):
+    if file.endswith('.py'):
+        bot.load_extension(f'cogs.{file[:-3]}')
+
+@bot.event
+# When the bot is ready for usage:
+async def on_ready():
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game('with my last braincells'))
+    print("Bot Ready!")
+
+
+@bot.event
+# When the bot detects a reaction to a message:
+async def on_raw_reaction_add(payload):
+    message_id = payload.message_id
+    if message_id == 785052231916716043:
+        guild_id = payload.guild_id
+        guild = discord.utils.find(lambda g: g.id == guild_id, bot.guilds)
+        if payload.emoji.name == 'Bronze':
+            role = discord.utils.get(guild.roles, name='Overwatch')
+        elif payload.emoji.name == 'LeagueOfLegends':
+            role = discord.utils.get(guild.roles, name='League')
+        elif payload.emoji.name == 'petpaimon':
+            role = discord.utils.get(guild.roles, name='Genshin')
+        else:
+            role = discord.utils.get(guild.roles, name=payload.emoji.name)
+        if role is not None:
+            member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
+            if member is not None:
+                await member.add_roles(role)
+            else:
+                print('Error: Member not found.')
+        else:
+            print('Error: Role not found.')
+    elif message_id == 785058497993113610:
+        guild_id = payload.guild_id
+        guild = discord.utils.find(lambda g: g.id == guild_id, bot.guilds)
+        if payload.emoji.name == 'HARedApple':
+            role = discord.utils.get(guild.roles, name='Red')
+        elif payload.emoji.name == 'HAGreenApple':
+            role = discord.utils.get(guild.roles, name='Green')
+        elif payload.emoji.name == 'SlimeWiggleBlue':
+            role = discord.utils.get(guild.roles, name='Blue')
+        elif payload.emoji.name == 'bappinkbirb':
+            role = discord.utils.get(guild.roles, name='Pink')
+        elif payload.emoji.name == 'lolipurple':
+            role = discord.utils.get(guild.roles, name='Purple')
+        elif payload.emoji.name == 'StockOrange':
+            role = discord.utils.get(guild.roles, name='Orange')
+        else:
+            role = discord.utils.get(guild.roles, name=payload.emoji.name)
+        if role is not None:
+            member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
+            if member is not None:
+                await member.add_roles(role)
+            else:
+                print('Error: Member not found.')
+        else:
+            print('Error: Role not found.')
+
+
+@bot.event
+# When the bot detects the removal of a reaction to a message:
+async def on_raw_reaction_remove(payload):
+    message_id = payload.message_id
+    if message_id == 785052231916716043:
+        guild_id = payload.guild_id
+        guild = discord.utils.find(lambda g: g.id == guild_id, bot.guilds)
+        if payload.emoji.name == 'Bronze':
+            role = discord.utils.get(guild.roles, name='Overwatch')
+        elif payload.emoji.name == 'LeagueOfLegends':
+            role = discord.utils.get(guild.roles, name='League')
+        elif payload.emoji.name == 'petpaimon':
+            role = discord.utils.get(guild.roles, name='Genshin')
+        else:
+            role = discord.utils.get(guild.roles, name=payload.emoji.name)
+        if role is not None:
+            member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
+            if member is not None:
+                await member.remove_roles(role)
+            else:
+                print('Error: Member not found.')
+        else:
+            print('Error: Role not found.')
+    elif message_id == 785058497993113610:
+        guild_id = payload.guild_id
+        guild = discord.utils.find(lambda g: g.id == guild_id, bot.guilds)
+        if payload.emoji.name == 'HARedApple':
+            role = discord.utils.get(guild.roles, name='Red')
+        elif payload.emoji.name == 'HAGreenApple':
+            role = discord.utils.get(guild.roles, name='Green')
+        elif payload.emoji.name == 'SlimeWiggleBlue':
+            role = discord.utils.get(guild.roles, name='Blue')
+        elif payload.emoji.name == 'bappinkbirb':
+            role = discord.utils.get(guild.roles, name='Pink')
+        elif payload.emoji.name == 'lolipurple':
+            role = discord.utils.get(guild.roles, name='Purple')
+        elif payload.emoji.name == 'StockOrange':
+            role = discord.utils.get(guild.roles, name='Orange')
+        else:
+            role = discord.utils.get(guild.roles, name=payload.emoji.name)
+        if role is not None:
+            member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
+            if member is not None:
+                await member.remove_roles(role)
+            else:
+                print('Error: Member not found.')
+        else:
+            print('Error: Role not found.')
+
+
+@bot.event
+# When a member joins:
+async def on_member_join(member):
+    channel = member.guild.system_channel
+    guild = member.guild
+    if channel is not None:
+        await channel.send(f'{member.mention} has joined the Server. Please get your Roles in the react-roles channel.')
+    role = discord.utils.get(guild.roles, name='Default Role')
+    await member.add_roles(role, atomic=True)
+
+
+@bot.event
+# When a member leaves:
+async def on_member_remove(member):
+    channel = member.guild.system_channel
+    if channel is not None:
+        await channel.send(f'{member.mention} has left the Server.')
+
+
+@bot.event
+# Error handling:
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send(f'{ctx.author.mention}, you aren\'t permitted to use this command!')
+    if isinstance(error, commands.BadArgument):
+        await ctx.send(f'{ctx.author.mention}, invalid or missing argument! Use ".help" to get help on command usage.')
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send(f'{ctx.author.mention}, that\'s not a valid command. Try ".help" to get a list of commands.')
+
+
+@bot.command()
+# Load a specific Cog.
+async def load(ctx, extension):
+    if ctx.author.id == 241852496862117888:
+        bot.load_extension(f'cogs.{extension}')
+        await ctx.send(f'The {extension} commands cog has been loaded.')
+    else:
+        raise commands.MissingPermissions
+
+
+@bot.command()
+# Unloads a specific Cog.
+async def unload(ctx, extension):
+    bot.unload_extension(f'cogs.{extension}')
+    await ctx.send(f'The {extension} commands cog has been unloaded.')
+
+
+@bot.command(aliases=['r'])
+# Reloads a specific Cog.
+async def reload(ctx, extension):
+    if ctx.author.id == 241852496862117888:
+        bot.unload_extension(f'cogs.{extension}')
+        bot.load_extension(f'cogs.{extension}')
+        await ctx.send(f'The {extension} commands cog has been reloaded.')
+    else:
+        raise commands.MissingPermissions
+
+
+bot.run(token)
